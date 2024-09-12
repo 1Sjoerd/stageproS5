@@ -1,0 +1,7 @@
+# Negeer de inhoud van de 'data' map maar behoud de map zelf
+hyc-sync-sjoerd/data/*
+!hyc-sync-sjoerd/data/.gitkeep
+
+# Negeer het .env en sync.bat bestand
+hyc-sync-sjoerd/.env
+sync.bat
