@@ -1,0 +1,67 @@
+name: Golang CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - develop
+      - "feature/*"
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  lint:
+    name: Lint Go Code
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.23.1'
+
+    - name: Install dependencies
+      working-directory: ./event-processor
+      run: go mod tidy
+
+    - name: Run GolangCI-Lint
+      working-directory: ./event-processor
+      run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest && golangci-lint run
+
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.23.1'
+
+    - name: Install dependencies
+      working-directory: ./event-processor
+      run: go mod tidy
+
+    - name: Run Unit Tests
+      working-directory: ./event-processor
+      run: go test -v ./tests/...
+
+  build:
+    name: Build Event Processor
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: '1.23.1'
+
+    - name: Build Go Project
+      working-directory: ./event-processor
+      run: go build -o event-processor ./main.go
